@@ -16,14 +16,6 @@ import java.util.logging.Logger;
  * clients that have submitted a unique screen name.  The
  * broadcast messages are prefixed with MESSAGE.
  *
- * Because this is just a teaching example to illustrate a simple
- * chat server, there are a few features that have been left out.
- * Two are very useful and belong in production code:
- *
- *     1. The protocol should be enhanced so that the client can
- *        send clean disconnect messages to the server.
- *
- *     2. The server should do some logging.
  */
 public class Server {
 
@@ -32,12 +24,14 @@ public class Server {
     private static Map<String, PrintWriter> writers = new HashMap<>();
     private static final Logger LOGGER = Logger.getLogger( Server.class.getName());
 
+    /** The messages that make up our chat protocol **/
     public enum PROTOCOL {
         SUBMIT_NAME
         , NAME_ACCEPTED
         , MESSAGE
         , GOODBYE
     }
+
     public static void main(String[] args) throws Exception {
         LOGGER.log(Level.INFO, "The chat server is running.");
         ServerSocket listener = new ServerSocket(PORT);
