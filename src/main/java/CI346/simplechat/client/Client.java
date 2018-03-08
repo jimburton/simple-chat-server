@@ -39,7 +39,7 @@ public class Client {
      * listener with the textfield so that pressing Return in the
      * listener sends the textfield contents to the server.  Note
      * however that the textfield is initially NOT editable, and
-     * only becomes editable AFTER the client receives the NAMEACCEPTED
+     * only becomes editable AFTER the client receives the NAME_ACCEPTED
      * message from the server.
      */
     public Client() {
@@ -107,8 +107,12 @@ public class Client {
                     send(getName());
                 } else if (line.startsWith(PROTOCOL.NAME_ACCEPTED.name())) {
                     textField.setEditable(true);
+                } else if (line.startsWith(PROTOCOL.GET_USERS.name())) {
+                    messageArea.append(line + "\n");
                 } else if (line.startsWith(PROTOCOL.MESSAGE.name())) {
                     messageArea.append(line.substring(8) + "\n");
+                } else if (line.startsWith(PROTOCOL.PM.name())) {
+                    messageArea.append("> "+line.substring(2) + "\n");
                 }
             }
         }

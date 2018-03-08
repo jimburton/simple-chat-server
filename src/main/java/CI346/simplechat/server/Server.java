@@ -37,6 +37,8 @@ public class Server {
         , NAME_ACCEPTED
         , MESSAGE
         , GOODBYE
+        , PM
+        , GET_USERS
     }
     public static void main(String[] args) throws Exception {
         LOGGER.log(Level.INFO, "The chat server is running.");

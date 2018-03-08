@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
@@ -76,6 +77,12 @@ public class ServerThread extends Thread {
                 String input = in.readLine();
                 if (input == null) {
                     return;
+                } else if (input.startsWith(PROTOCOL.PM.name())) {
+                    LOGGER.log(Level.INFO, "Sending PM to {0}", getPMName(input));
+                    sendPM(getPMName(input), input);
+                } else if (input.startsWith(PROTOCOL.GET_USERS.name())) {
+                    LOGGER.log(Level.INFO, "Sending users");
+                    sendUsers();
                 } else if (input.equals(PROTOCOL.GOODBYE.name())) {
                     shutDown();
                     broadcast(toInfo(name+" left the room"));
@@ -106,6 +113,11 @@ public class ServerThread extends Thread {
         }
     }
 
+    private void sendUsers() {
+        LOGGER.log(Level.INFO, "Sending users");
+        out.println(PROTOCOL.GET_USERS+" "+ Arrays.toString(getWriters().keySet().toArray()));
+    }
+
     private void broadcast(String msg) {
         LOGGER.log(Level.INFO, "Broadcasting {0}", msg);
         Map<String, PrintWriter> writers = getWriters();
@@ -114,14 +126,23 @@ public class ServerThread extends Thread {
         }
     }
 
-    private String toMessage(String screenName, String body) {
+    private void sendPM(String user, String msg) {
+        LOGGER.log(Level.INFO, "Sending PM to {0} : {1}", new Object[]{user, msg});
+        LOGGER.log(Level.INFO, "Has key? {0}", getWriters().containsKey(user));
+        getWriters().get(user).println(msg);
+    }
+
+    public static String toMessage(String screenName, String body) {
         return String.format("%s %s: %s",
                 PROTOCOL.MESSAGE.name(),
                 screenName, body);
     }
 
-    private String toInfo(String body) {
+    public static String toInfo(String body) {
         return String.format("%s [%s]", PROTOCOL.MESSAGE.name(), body);
     }
 
+    public static String getPMName(String line) {
+        return line.split(" ")[1];
+    }
 }
