@@ -1,20 +1,14 @@
 package CI346.simplechat.server;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static CI346.simplechat.server.Server.*;
 
@@ -43,38 +37,10 @@ public class ServerThread extends Thread {
      */
     public void run() {
         try {
-
-            boolean wsClient = false;//is this client using the ws: protocol or plain text over sockets?
-
             // Create character streams for the socket.
             in = new BufferedReader(new InputStreamReader(
                     socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
-
-            String data = new Scanner(socket.getInputStream(),"UTF-8").useDelimiter("\\r\\n\\r\\n").next();
-            Matcher get = Pattern.compile("^GET").matcher(data);
-            if (get.find()) {
-                wsClient = true;
-                LOGGER.log(Level.INFO, "The Snark was a boojum");
-                Matcher match = Pattern.compile("Sec-WebSocket-Key: (.*)").matcher(data);
-                match.find();
-                byte[] response = ("HTTP/1.1 101 Switching Protocols\r\n"
-                        + "Connection: Upgrade\r\n"
-                        + "Upgrade: websocket\r\n"
-                        + "Sec-WebSocket-Accept: "
-                        + DatatypeConverter
-                        .printBase64Binary(
-                                MessageDigest
-                                        .getInstance("SHA-1")
-                                        .digest((match.group(1) + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
-                                                .getBytes("UTF-8")))
-                        + "\r\n\r\n")
-                        .getBytes("UTF-8");
-
-                socket.getOutputStream().write(response, 0, response.length);
-            } else {
-                LOGGER.log(Level.INFO, "Not a GET request");
-            }
 
             // Request a name from this client.  Keep requesting until
             // a name is submitted that is not already used.  Note that
@@ -119,10 +85,7 @@ public class ServerThread extends Thread {
             }
         } catch (IOException e) {
             LOGGER.severe(e.getMessage());
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.getMessage());
-        }
-        finally {
+        } finally {
             // This client is going down!  Remove its name and its print
             // writer from the sets, and close its socket.
             shutDown();
@@ -161,13 +124,4 @@ public class ServerThread extends Thread {
         return String.format("%s [%s]", PROTOCOL.MESSAGE.name(), body);
     }
 
-    private byte[] decode(byte[] encoded) {
-        byte[] decoded = new byte[encoded.length];
-        byte[] key = byte {167, 225, 225, 210};
-
-        for (int i = 0; i < encoded.length; i++) {
-            decoded[i] = (byte)(encoded[i] ^ key[i & 0x3]);
-        }
-        return decoded;
-    }
 }

@@ -1,6 +1,5 @@
 package CI346.simplechat.client;
 
-import CI346.simplechat.server.Server;
 import CI346.simplechat.server.Server.PROTOCOL;
 
 import javax.swing.*;
