@@ -1,6 +1,6 @@
-package CI346.simplechat.client;
+package CI646.simplechat.client;
 
-import CI346.simplechat.server.Server.PROTOCOL;
+import CI646.simplechat.server.Server.PROTOCOL;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
