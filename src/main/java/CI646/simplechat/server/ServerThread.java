@@ -77,7 +77,7 @@ public class ServerThread extends Thread {
                     return;
                 } else if (input.startsWith(Server.PROTOCOL.PM.name())) {
                     LOGGER.log(Level.INFO, "Sending PM to {0}", getPMName(input));
-                    sendPM(getPMName(input), input);
+                    sendPM(getPMName(input), toPM(name, input));
                 } else if (input.startsWith(Server.PROTOCOL.GET_USERS.name())) {
                     LOGGER.log(Level.INFO, "Sending users");
                     sendUsers();
@@ -134,6 +134,12 @@ public class ServerThread extends Thread {
         return String.format("%s %s: %s",
                 Server.PROTOCOL.MESSAGE.name(),
                 screenName, body);
+    }
+
+    public static String toPM(String screenName, String body) {
+        return String.format("%s [%s]: %s",
+                Server.PROTOCOL.PM.name(),
+                screenName, body.replaceFirst("PM \\w+", ""));
     }
 
     public static String toInfo(String body) {

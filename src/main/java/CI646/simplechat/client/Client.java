@@ -108,11 +108,12 @@ public class Client {
                 } else if (line.startsWith(PROTOCOL.NAME_ACCEPTED.name())) {
                     textField.setEditable(true);
                 } else if (line.startsWith(PROTOCOL.GET_USERS.name())) {
-                    messageArea.append(line + "\n");
+                    messageArea.append("In the room with: " + line.substring(11, line.length()-1) + "\n");
                 } else if (line.startsWith(PROTOCOL.MESSAGE.name())) {
                     messageArea.append(line.substring(8) + "\n");
                 } else if (line.startsWith(PROTOCOL.PM.name())) {
-                    messageArea.append("> "+line.substring(2) + "\n");
+                    String[] bits = line.split(" ");
+                    messageArea.append(line);
                 }
             }
         }
