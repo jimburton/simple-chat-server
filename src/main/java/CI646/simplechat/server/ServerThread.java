@@ -1,4 +1,4 @@
-package CI346.simplechat.server;
+package CI646.simplechat.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static CI346.simplechat.server.Server.*;
 
 /**
  * A handler thread class.  Handlers are spawned from the listening
@@ -47,13 +45,13 @@ public class ServerThread extends Thread {
             // checking for the existence of a name and adding the name
             // must be done while locking the set of names.
             while (true) {
-                out.println(PROTOCOL.SUBMIT_NAME.name());
+                out.println(Server.PROTOCOL.SUBMIT_NAME.name());
                 name = in.readLine();
                 if (name == null) {
                     return;
                 }
                 LOGGER.log(Level.INFO, "Trying {0}", name);
-                HashSet<String> names = getNames();
+                HashSet<String> names = Server.getNames();
                 synchronized (names) {
                     if (!names.contains(name)) {
                         LOGGER.log(Level.INFO, "Accepting {0}", name);
@@ -66,8 +64,8 @@ public class ServerThread extends Thread {
             // Now that a successful name has been chosen, add the
             // socket's print writer to the set of all writers so
             // this client can receive broadcast messages.
-            out.println(PROTOCOL.NAME_ACCEPTED.name());
-            putWriter(name, out);
+            out.println(Server.PROTOCOL.NAME_ACCEPTED.name());
+            Server.putWriter(name, out);
             broadcast(toInfo(name+" entered the room"));
 
             // Accept messages from this client and broadcast them.
@@ -76,7 +74,7 @@ public class ServerThread extends Thread {
                 String input = in.readLine();
                 if (input == null) {
                     return;
-                } else if (input.equals(PROTOCOL.GOODBYE.name())) {
+                } else if (input.equals(Server.PROTOCOL.GOODBYE.name())) {
                     shutDown();
                     broadcast(toInfo(name+" left the room"));
                 } else {
@@ -94,10 +92,10 @@ public class ServerThread extends Thread {
 
     private void shutDown() {
         if (name != null) {
-            removeName(name);
+            Server.removeName(name);
         }
         if (out != null) {
-            removeWriter(out);
+            Server.removeWriter(out);
         }
         try {
             socket.close();
@@ -108,7 +106,7 @@ public class ServerThread extends Thread {
 
     private void broadcast(String msg) {
         LOGGER.log(Level.INFO, "Broadcasting {0}", msg);
-        Map<String, PrintWriter> writers = getWriters();
+        Map<String, PrintWriter> writers = Server.getWriters();
         for (String name : writers.keySet()) {
             writers.get(name).println(msg);
         }
@@ -116,12 +114,12 @@ public class ServerThread extends Thread {
 
     private String toMessage(String screenName, String body) {
         return String.format("%s %s: %s",
-                PROTOCOL.MESSAGE.name(),
+                Server.PROTOCOL.MESSAGE.name(),
                 screenName, body);
     }
 
     private String toInfo(String body) {
-        return String.format("%s [%s]", PROTOCOL.MESSAGE.name(), body);
+        return String.format("%s [%s]", Server.PROTOCOL.MESSAGE.name(), body);
     }
 
 }

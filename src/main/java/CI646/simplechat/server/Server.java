@@ -1,4 +1,4 @@
-package CI346.simplechat.server;
+package CI646.simplechat.server;
 
 import java.io.PrintWriter;
 import java.net.ServerSocket;

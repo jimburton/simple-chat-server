@@ -1,6 +1,6 @@
 # simple-chat-server
 
-A lab exercise for CI346 adapted from http://cs.lmu.edu/~ray/notes/javanetexamples/.
+A lab exercise for CI646 adapted from http://cs.lmu.edu/~ray/notes/javanetexamples/.
 
 This repository contains a simple Java socket server and a GUI client. Download the code 
 and start by reading the `Server` and `ServerThread` classes. Run the application by
