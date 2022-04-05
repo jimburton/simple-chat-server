@@ -3,14 +3,18 @@
 A lab exercise for CI646 adapted from http://cs.lmu.edu/~ray/notes/javanetexamples/.
 
 This repository contains a simple Java socket server and a GUI client. Download the code 
-and start by reading the `Server` and `ServerThread` classes. Run the application by
-launching the server by running the `main` method in the `Server` class, then launching 
-several clients by running the `main` method in `Client`. Send a few messages and watch the
-logging output in the terminals attached to each process.
+and start by reading the `Server` and `ServerThread` classes. 
 
 
-`Server` is the entry point 
-for the server side of the application. It listens forever on `localhost:9001`, 
+## Exercise 0
+
+Launch the server by running the `main` method in the `Server` class. Then launch 
+several clients by running the `main` method in `Client` several times. Send a few 
+messages and watch the logging output in the terminals attached to each process.
+
+Read the code of the `Server`, `ServerThread` and `Client` classes.
+
+`Server` is the entry point for the server side of the application. It listens forever on `localhost:9001`, 
 waiting for clients to connect. When a connection arrives, a new instance of `ServerThread`, 
 which is a subclass of `Thread`, is spawned and started to handle the connection.
 
